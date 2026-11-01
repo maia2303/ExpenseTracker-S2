@@ -1,0 +1,249 @@
+welcome-page {
+  min-height: 100vh;
+  min-height: 100dvh;
+  box-sizing: border-box;
+  padding: calc(24px + env(safe-area-inset-top, 0px)) 20px 24px;
+  background: #f4f7fb;
+  color: #1e293b;
+  font-family: Inter, system-ui, -apple-system, sans-serif;
+}
+
+.welcome-header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  max-width: 520px;
+  margin: 0 auto 36px;
+}
+
+.brand-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 42px;
+  height: 42px;
+  border-radius: 14px;
+  background: #2563eb;
+  color: white;
+  font-size: 25px;
+  font-weight: 800;
+}
+
+.brand-name {
+  color: #1e3a8a;
+  font-size: 21px;
+  font-weight: 800;
+  letter-spacing: -0.5px;
+}
+
+.welcome-main {
+  width: 100%;
+  max-width: 520px;
+  margin: 0 auto;
+}
+
+.welcome-intro {
+  margin-bottom: 28px;
+}
+
+.welcome-eyebrow {
+  margin: 0 0 12px;
+  color: #2563eb;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 1.8px;
+}
+
+.welcome-intro h1 {
+  margin: 0 0 14px;
+  color: #172554;
+  font-size: clamp(30px, 8vw, 40px);
+  font-weight: 800;
+  line-height: 1.15;
+  letter-spacing: -1.3px;
+}
+
+.welcome-description {
+  margin: 0;
+  color: #64748b;
+  font-size: 15px;
+  line-height: 1.75;
+}
+
+.summary-card {
+  padding: 24px;
+  margin-bottom: 30px;
+  border: 1px solid #e2e8f0;
+  border-radius: 22px;
+  background: #ffffff;
+  box-shadow: 0 10px 30px rgb(15 23 42 / 5%);
+}
+
+.summary-heading {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 25px;
+}
+
+.summary-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 12px;
+  background: #dbeafe;
+  color: #1d4ed8;
+  font-size: 23px;
+  font-weight: 700;
+}
+
+.summary-heading h2,
+.quick-actions h2 {
+  margin: 0;
+  color: #1e293b;
+  font-size: 17px;
+  font-weight: 750;
+}
+
+.summary-label {
+  margin: 0 0 6px;
+  color: #64748b;
+  font-size: 13px;
+}
+
+.summary-total {
+  margin: 0;
+  color: #1d4ed8;
+  font-size: clamp(32px, 8vw, 40px);
+  font-weight: 800;
+  letter-spacing: -1px;
+  overflow-wrap: anywhere;
+}
+
+.summary-divider {
+  height: 1px;
+  margin: 22px 0 18px;
+  background: #e2e8f0;
+}
+
+.summary-movements {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  color: #64748b;
+  font-size: 14px;
+}
+
+.summary-movements strong {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 36px;
+  min-height: 36px;
+  padding: 0 8px;
+  box-sizing: border-box;
+  border-radius: 12px;
+  background: #eff6ff;
+  color: #1d4ed8;
+  font-size: 16px;
+}
+
+.quick-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.quick-actions h2 {
+  margin-bottom: 5px;
+}
+
+.action-button {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 12px;
+  width: 100%;
+  min-height: 54px;
+  padding: 14px 16px;
+  border: 1px solid transparent;
+  border-radius: 14px;
+  font: inherit;
+  font-size: 14px;
+  font-weight: 700;
+  text-align: left;
+  cursor: pointer;
+  transition: background 0.15s, transform 0.15s;
+}
+
+.action-button:active {
+  transform: scale(0.98);
+}
+
+.action-primary {
+  background: #2563eb;
+  color: #ffffff;
+}
+
+.action-primary:hover {
+  background: #1d4ed8;
+}
+
+.action-secondary {
+  border-color: #dbeafe;
+  background: #ffffff;
+  color: #1e40af;
+}
+
+.action-secondary:hover {
+  background: #eff6ff;
+}
+
+.action-symbol {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 28px;
+  height: 28px;
+  border-radius: 9px;
+  background: rgb(255 255 255 / 20%);
+  font-size: 23px;
+}
+
+.list-symbol {
+  background: #dbeafe;
+  font-size: 18px;
+}
+
+.action-arrow {
+  margin-left: auto;
+  font-size: 20px;
+}
+
+.welcome-footer {
+  padding-top: 28px;
+  color: #94a3b8;
+  font-size: 12px;
+  text-align: center;
+}
+
+@media (min-width: 700px) {
+  .welcome-page {
+    padding-right: 32px;
+    padding-left: 32px;
+  }
+
+  .welcome-header {
+    justify-content: flex-start;
+    margin-bottom: 54px;
+  }
+
+  .welcome-intro h1 {
+    max-width: 480px;
+  }
+}
