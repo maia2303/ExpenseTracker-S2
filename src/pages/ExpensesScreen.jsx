@@ -1,4 +1,3 @@
-
 import { Link } from 'react-router-dom';
 import mockExpenses from '../data/mockExpenses';
 import ExpenseCard from '../components/ExpenseCard';
@@ -33,3 +32,5 @@ function ExpensesScreen() {
 }
 
 export default ExpensesScreen;
+
+/** pantalla del listado:  */

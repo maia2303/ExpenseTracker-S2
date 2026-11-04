@@ -1,4 +1,5 @@
 import './HomeScreen.css';
+import { Link } from 'react-router-dom';
 
 const gastos = [
   { id: '1', descripcion: 'Supermercado', monto: 25000 },
@@ -88,21 +89,17 @@ export default function HomeScreen() {
             </span>
           </button>
 
-          <button
-            className="action-button action-secondary"
-            type="button"
-            onClick={() =>
-              window.alert('El listado se conectará en la integración de navegación.')
-            }
-          >
-            <span className="action-symbol list-symbol" aria-hidden="true">
-              ☰
-            </span>
-            Ver Listado Completo
-            <span className="action-arrow" aria-hidden="true">
-              →
-            </span>
-          </button>
+          
+      <Link to="/expenses" className="action-button action-secondary">
+      <span className="action-symbol list-symbol" aria-hidden="true">
+       ☰
+       </span>
+       Ver Listado Completo
+       <span className="action-arrow" aria-hidden="true">
+       →
+      </span>
+    </Link>
+
         </section>
 
         <footer className="welcome-footer">
