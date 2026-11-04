@@ -1,4 +1,6 @@
+import { useState } from 'react';
 import './HomeScreen.css';
+import NewExpenseModal from '../components/NewExpenseModal';
 import { Link } from 'react-router-dom';
 
 const gastos = [
@@ -20,6 +22,8 @@ const totalGastos = gastos.reduce(
 );
 
 export default function HomeScreen() {
+  const [isOpen, setIsOpen] = useState(false);
+
   return (
     <div className="welcome-page">
       <header className="welcome-header">
@@ -76,11 +80,13 @@ export default function HomeScreen() {
           <button
             className="action-button action-primary"
             type="button"
-            onClick={() =>
-              window.alert('El formulario se conectará en la integración de navegación.')
-            }
+            onClick={() => setIsOpen(true)}
+            
           >
-            <span className="action-symbol" aria-hidden="true">
+            <span className="action-symbol" 
+            aria-hidden="true"
+            >
+
               +
             </span>
             Registrar Nuevo Gasto
@@ -90,8 +96,16 @@ export default function HomeScreen() {
           </button>
 
           
-      <Link to="/expenses" className="action-button action-secondary">
-      <span className="action-symbol list-symbol" aria-hidden="true">
+      <Link 
+         to="/expenses" 
+         className="action-button action-secondary"
+         >
+
+        <span 
+        className="action-symbol list-symbol" 
+        aria-hidden="true"
+        >
+
        ☰
        </span>
        Ver Listado Completo
@@ -106,6 +120,10 @@ export default function HomeScreen() {
           Tus finanzas bajo control, un gasto a la vez.
         </footer>
       </main>
+      <NewExpenseModal 
+      isOpen={isOpen}
+      onClose={()=> setIsOpen(false)}
+      />
     </div>
   );
 }

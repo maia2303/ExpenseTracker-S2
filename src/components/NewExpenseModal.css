@@ -1,0 +1,108 @@
+
+.expense-modal {
+  position: fixed;
+  inset: auto 0 0;
+  width: 100%;
+  max-width: 500px;
+  max-height: 90dvh;
+  margin: 0 auto;
+  padding: 0;
+  border: none;
+  border-radius: 20px 20px 0 0;
+  background: white;
+  color: #1f2937;
+  overflow-y: auto;
+  box-sizing: border-box;
+}
+
+
+.expense-modal[open] {
+  animation: slideUp 0.3s ease-out;
+}
+
+.expense-modal::backdrop {
+  background: rgba(0, 0, 0, 0.55);
+}
+
+.expense-modal-content {
+  padding: 24px;
+  padding-bottom: calc(24px + env(safe-area-inset-bottom));
+}
+
+.modal-handle {
+  width: 45px;
+  height: 5px;
+  background: #d1d5db;
+  border-radius: 10px;
+  margin: 0 auto 20px;
+}
+
+.expense-modal h2 {
+  font-size: 26px;
+  margin-bottom: 8px;
+}
+
+.expense-modal p {
+  color: #6b7280;
+  margin-bottom: 20px;
+}
+
+.expense-modal form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.expense-modal label {
+  font-weight: 600;
+}
+
+.expense-modal input {
+  width: 100%;
+  min-height: 48px;
+  padding: 12px;
+  border: 1px solid #d1d5db;
+  border-radius: 12px;
+  font-size: 16px;
+  box-sizing: border-box;
+}
+
+.modal-actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 12px;
+}
+
+.modal-actions button {
+  flex: 1;
+  min-height: 48px;
+  border: none;
+  border-radius: 12px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.btn-guardar {
+  background: #2563eb;
+  color: white;
+}
+
+.btn-guardar:active {
+  background: #1d4ed8;
+}
+
+.modal-error {
+  color: #dc2626 !important;
+  font-size: 14px;
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(100%);
+  }
+
+  to {
+    transform: translateY(0);
+  }
+}

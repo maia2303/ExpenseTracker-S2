@@ -1,9 +1,13 @@
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import mockExpenses from '../data/mockExpenses';
 import ExpenseCard from '../components/ExpenseCard';
+import NewExpenseModal from '../components/NewExpenseModal';
 import './ExpensesScreen.css';
 
 function ExpensesScreen() {
+   const [isOpen, setIsOpen] = useState(false);
+
   return (
     <main className="expenses-page">
       <header className="expenses-header">
@@ -13,6 +17,15 @@ function ExpensesScreen() {
 
         <h1>Mis gastos</h1>
         <p>Consultá todos tus movimientos registrados.</p>
+
+         <button
+          type="button"
+          className="new-expense-button"
+          onClick={() => setIsOpen(true)}
+        >
+          + Registrar nuevo gasto
+        </button>
+
       </header>
 
       <section aria-labelledby="expenses-title">
@@ -27,6 +40,11 @@ function ExpensesScreen() {
           ))}
         </ul>
       </section>
+
+      <NewExpenseModal
+        isOpen={isOpen}
+        onClose={() => setIsOpen(false)}
+      />
     </main>
   );
 }
