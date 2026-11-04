@@ -1,7 +1,9 @@
-import HomeScreen from './pages/HomeScreen';
+import AppRouter from './router/AppRouter';
 
 function App() {
-  return <HomeScreen />;
+  return <AppRouter />;
 }
 
 export default App;
+
+// app.jsx queda como punto de entrada y approuter.jsx decide que pantalla mostrar segun la URL
