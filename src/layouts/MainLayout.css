@@ -1,0 +1,81 @@
+.app-layout {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  min-height: 100dvh;
+}
+
+/* Espacio inferior para que la barra fija no tape el contenido */
+.app-content {
+  flex: 1;
+  padding-bottom: calc(76px + env(safe-area-inset-bottom, 0px));
+}
+
+.bottom-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 900;
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  background: #ffffff;
+  border-top: 1px solid #e2e8f0;
+  box-shadow: 0 -4px 20px rgb(15 23 42 / 6%);
+  padding-top: 6px;
+  padding-bottom: calc(6px + env(safe-area-inset-bottom, 0px));
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.bottom-nav-link {
+  flex: 1;
+  max-width: 160px;
+  min-height: 52px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  color: #64748b;
+  text-decoration: none;
+  font-size: 12px;
+  font-weight: 600;
+  border-radius: 12px;
+  transition: color 0.15s ease, transform 0.1s ease, background-color 0.15s ease;
+}
+
+/* Retroalimentación táctil (:active) */
+.bottom-nav-link:active {
+  transform: scale(0.95);
+  background-color: #f1f5f9;
+}
+
+/* Pestaña activa destacada visualmente */
+.bottom-nav-link.active {
+  color: #2563eb;
+  font-weight: 700;
+}
+
+.bottom-nav-link.active .bottom-nav-icon {
+  background: #dbeafe;
+  color: #1d4ed8;
+}
+
+.bottom-nav-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 26px;
+  border-radius: 999px;
+  font-size: 18px;
+  line-height: 1;
+  transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.bottom-nav-label {
+  line-height: 1;
+}
+

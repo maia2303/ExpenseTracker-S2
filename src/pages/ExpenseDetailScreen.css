@@ -16,6 +16,12 @@
   font: inherit;
   font-weight: 700;
   cursor: pointer;
+  transition: transform 0.1s ease, opacity 0.15s ease;
+}
+
+.detail-back-button:active {
+  transform: scale(0.96);
+  opacity: 0.75;
 }
 
 .detail-card {

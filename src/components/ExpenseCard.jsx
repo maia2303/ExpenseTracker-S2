@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom';
+import CategoryBadge from './CategoryBadge';
 
 const formatoMoneda = (monto) =>
   new Intl.NumberFormat('es-AR', {
@@ -16,7 +17,7 @@ function ExpenseCard({ expense }) {
       >
         <div className="expense-card-info">
           <h2>{expense.descripcion}</h2>
-          <p>{expense.categoria}</p>
+          <CategoryBadge categoria={expense.categoria} />
         </div>
 
         <div className="expense-card-amount">

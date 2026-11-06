@@ -1,5 +1,6 @@
 import { useNavigate, useParams } from 'react-router-dom';
 import mockExpenses from '../data/mockExpenses';
+import CategoryBadge from '../components/CategoryBadge';
 import './ExpenseDetailScreen.css';
 
 const formatoMoneda = (monto) =>
@@ -56,7 +57,7 @@ function ExpenseDetailScreen() {
 
         <div className="detail-field">
           <span>Categoría</span>
-          <strong>{expense.categoria}</strong>
+          <CategoryBadge categoria={expense.categoria} />
         </div>
 
         <div className="detail-field">
