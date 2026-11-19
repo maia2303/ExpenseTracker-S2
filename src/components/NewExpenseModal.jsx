@@ -73,9 +73,9 @@ export default function NewExpenseModal({ isOpen, onClose }) {
     // Agregamos el gasto al contexto
     addExpense({
       title: nombre,
-      amount: monto,
+      amount: montoNumerico,
       category: categoria,
-      notes: mensaje
+      notes: ''
     });
 
     limpiarFormulario();
