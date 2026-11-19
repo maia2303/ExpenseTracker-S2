@@ -32,14 +32,20 @@ function ExpensesScreen() {
       <section aria-labelledby="expenses-title">
         <h2 id="expenses-title">Listado de gastos</h2>
 
-        <ul className="expenses-list">
-          {expenses.map((expense) => (
-            <ExpenseCard
-              key={expense.id}
-              expense={expense}
-            />
-          ))}
-        </ul>
+        {expenses.length === 0 ? (
+          <p className="empty-expenses">
+            No tenés gastos registrados todavía. ¡Agregá el primero!
+          </p>
+        ) : (
+          <ul className="expenses-list">
+            {expenses.map((expense) => (
+              <ExpenseCard
+                key={expense.id}
+                expense={expense}
+              />
+            ))}
+          </ul>
+        )}
       </section>
 
       <NewExpenseModal
