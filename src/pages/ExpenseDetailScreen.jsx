@@ -1,5 +1,5 @@
 import { useNavigate, useParams } from 'react-router-dom';
-import mockExpenses from '../data/mockExpenses';
+import { useExpenses } from '../context/ExpensesContext';
 import CategoryBadge from '../components/CategoryBadge';
 import './ExpenseDetailScreen.css';
 
@@ -13,8 +13,9 @@ const formatoMoneda = (monto) =>
 function ExpenseDetailScreen() {
   const { id } = useParams();
   const navigate = useNavigate();
+  const { expenses } = useExpenses();
 
-  const expense = mockExpenses.find(
+  const expense = expenses.find(
     (item) => item.id === id
   );
 
@@ -30,9 +31,14 @@ function ExpenseDetailScreen() {
     );
   }
 
-  const fechaFormateada = new Date(
-    `${expense.fecha}T00:00:00`
-  ).toLocaleDateString('es-AR');
+  const rawDate = expense.createdAt ?? expense.fecha;
+  const parsedDate = rawDate
+    ? new Date(rawDate.includes('T') ? rawDate : `${rawDate}T00:00:00`)
+    : null;
+  const fechaFormateada =
+    parsedDate && !Number.isNaN(parsedDate.getTime())
+      ? parsedDate.toLocaleDateString('es-AR')
+      : 'Sin fecha';
 
   return (
     <main className="detail-page">
@@ -47,17 +53,17 @@ function ExpenseDetailScreen() {
       <section className="detail-card">
         <p className="detail-eyebrow">DETALLE DEL GASTO</p>
 
-        <h1>{expense.descripcion}</h1>
+        <h1>{expense.title ?? expense.descripcion}</h1>
 
         <p className="detail-amount">
-          {formatoMoneda(expense.monto)}
+          {formatoMoneda(expense.amount ?? expense.monto)}
         </p>
 
         <div className="detail-divider" />
 
         <div className="detail-field">
           <span>Categoría</span>
-          <CategoryBadge categoria={expense.categoria} />
+          <CategoryBadge categoria={expense.category ?? expense.categoria} />
         </div>
 
         <div className="detail-field">
@@ -67,7 +73,7 @@ function ExpenseDetailScreen() {
 
         <div className="detail-field">
           <span>Notas</span>
-          <strong>{expense.notas || 'Sin notas'}</strong>
+          <strong>{expense.notes ?? expense.notas ?? 'Sin notas'}</strong>
         </div>
       </section>
     </main>

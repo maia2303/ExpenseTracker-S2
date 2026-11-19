@@ -16,12 +16,12 @@ function ExpenseCard({ expense }) {
         className="expense-card-link"
       >
         <div className="expense-card-info">
-          <h2>{expense.descripcion}</h2>
-          <CategoryBadge categoria={expense.categoria} />
+          <h2>{expense.title ?? expense.descripcion}</h2>
+          <CategoryBadge categoria={expense.category ?? expense.categoria} />
         </div>
 
         <div className="expense-card-amount">
-          <strong>{formatoMoneda(expense.monto)}</strong>
+          <strong>{formatoMoneda(expense.amount ?? expense.monto)}</strong>
           <span aria-hidden="true">→</span>
         </div>
       </Link>

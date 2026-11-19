@@ -1,12 +1,13 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import mockExpenses from '../data/mockExpenses';
+import { useExpenses } from '../context/ExpensesContext';
 import ExpenseCard from '../components/ExpenseCard';
 import NewExpenseModal from '../components/NewExpenseModal';
 import './ExpensesScreen.css';
 
 function ExpensesScreen() {
-   const [isOpen, setIsOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
+  const { expenses } = useExpenses();
 
   return (
     <main className="expenses-page">
@@ -32,7 +33,7 @@ function ExpensesScreen() {
         <h2 id="expenses-title">Listado de gastos</h2>
 
         <ul className="expenses-list">
-          {mockExpenses.map((expense) => (
+          {expenses.map((expense) => (
             <ExpenseCard
               key={expense.id}
               expense={expense}
