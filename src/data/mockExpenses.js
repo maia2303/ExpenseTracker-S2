@@ -1,32 +1,28 @@
-const mockExpenses = [
+export const INITIAL_EXPENSES = [
   {
     id: '1',
-    descripcion: 'Supermercado',
-    monto: 25000,
-    categoria: 'Alimentación',
-    fecha: '2026-10-15',
-    notas: 'Compra semanal',
+    title: 'Supermercado',
+    amount: 25000,
+    category: 'Alimentación',
+    notes: 'Compra semanal',
+    createdAt: '2026-10-15T12:00:00.000Z',
   },
   {
     id: '2',
-    descripcion: 'Combustible',
-    monto: 18000,
-    categoria: 'Transporte',
-    fecha: '2026-10-18',
-    notas: 'Carga de combustible',
+    title: 'Combustible',
+    amount: 18000,
+    category: 'Transporte',
+    notes: 'Carga de combustible',
+    createdAt: '2026-10-18T12:00:00.000Z',
   },
   {
     id: '3',
-    descripcion: 'Internet',
-    monto: 32000,
-    categoria: 'Servicios',
-    fecha: '2026-10-20',
-    notas: 'Pago mensual de internet',
+    title: 'Internet',
+    amount: 32000,
+    category: 'Servicios',
+    notes: 'Pago mensual de internet',
+    createdAt: '2026-10-20T12:00:00.000Z',
   },
 ];
 
-export default mockExpenses;
-
-
-// hacemos esto pq el listado y el detalle van a consultar el mismo arreglo. asi no tenemos que escribir los datos dos veces.
-// ej: cuando la persona toque supermercado, vamos a buscar el gasto cuyo id sea 1 y mostrar su informacion. 
+export default INITIAL_EXPENSES;

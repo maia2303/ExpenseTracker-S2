@@ -1,13 +1,8 @@
 import { useState } from 'react';
+import { Link } from 'react-router-dom';
 import './HomeScreen.css';
 import NewExpenseModal from '../components/NewExpenseModal';
-import { Link } from 'react-router-dom';
-
-const gastos = [
-  { id: '1', descripcion: 'Supermercado', monto: 25000 },
-  { id: '2', descripcion: 'Combustible', monto: 18000 },
-  { id: '3', descripcion: 'Internet', monto: 32000 },
-];
+import { useExpenses } from '../context/ExpensesContext';
 
 const formatoMoneda = (monto) =>
   new Intl.NumberFormat('es-AR', {
@@ -16,13 +11,14 @@ const formatoMoneda = (monto) =>
     maximumFractionDigits: 0,
   }).format(monto);
 
-const totalGastos = gastos.reduce(
-  (total, gasto) => total + gasto.monto,
-  0
-);
-
 export default function HomeScreen() {
   const [isOpen, setIsOpen] = useState(false);
+  const { expenses } = useExpenses();
+
+  const totalGastos = expenses.reduce(
+    (total, gasto) => total + Number(gasto.amount ?? gasto.monto ?? 0),
+    0
+  );
 
   return (
     <div className="welcome-page">
@@ -67,7 +63,7 @@ export default function HomeScreen() {
 
           <div className="summary-movements">
             <span>Movimientos registrados</span>
-            <strong>{gastos.length}</strong>
+            <strong>{expenses.length}</strong>
           </div>
         </section>
 
