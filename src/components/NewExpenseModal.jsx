@@ -3,8 +3,15 @@ import React, { useState, useRef, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import './NewExpenseModal.css';
 
+//Sprint 3 Conexión al ExpenseContext para la persistencia
+import { useExpenses } from '../context/ExpensesContext';
+
 export default function NewExpenseModal({ isOpen, onClose }) {
   const dialogRef = useRef(null);
+
+  //Sprint 3, obtenemos addExpense del contexto para agregar un nuevo gasto
+  const { addExpense } = useExpenses();
+
 
   const [nombre, setNombre] = useState('');
   const [monto, setMonto] = useState('');
@@ -35,6 +42,7 @@ export default function NewExpenseModal({ isOpen, onClose }) {
     onClose();
   };
 
+  //Sprint 3, modificamos esta funcion para que se conecte con el contex
   const guardarGasto = (event) => {
     event.preventDefault();
 
@@ -50,15 +58,25 @@ export default function NewExpenseModal({ isOpen, onClose }) {
       return;
     }
 
+    /*
+    Antes mostrabamos el gasto en consola, ahora lo agregamos al contexto
     console.log('Gasto ingresado:', {
       nombre,
       monto: montoNumerico,
       categoria,
     });
 
-    window.alert(
+      window.alert(
       `¡Listo!\nGasto: ${nombre}\nMonto: $${monto}\nCategoría: ${categoria}`
-    );
+    );*/
+
+    // Agregamos el gasto al contexto
+    addExpense({
+      title: nombre,
+      amount: monto,
+      category: categoria,
+      notes: mensaje
+    });
 
     limpiarFormulario();
     onClose();

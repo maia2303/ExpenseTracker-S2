@@ -1,7 +1,9 @@
 import { useNavigate, useParams } from 'react-router-dom';
-import { useExpenses } from '../context/ExpensesContext';
 import CategoryBadge from '../components/CategoryBadge';
 import './ExpenseDetailScreen.css';
+
+//Sprint 3, conexión al contexto
+import { useExpenses } from '../context/ExpensesContext';
 
 const formatoMoneda = (monto) =>
   new Intl.NumberFormat('es-AR', {
@@ -13,7 +15,8 @@ const formatoMoneda = (monto) =>
 function ExpenseDetailScreen() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { expenses } = useExpenses();
+  //Sprint 3, accedemos a la funcion de eliminar la expensa
+  const { expenses, removeExpense } = useExpenses();
 
   const expense = expenses.find(
     (item) => item.id === id
@@ -22,14 +25,36 @@ function ExpenseDetailScreen() {
   if (!expense) {
     return (
       <main className="detail-page">
-        <h1>Gasto no encontrado</h1>
-        <p>El gasto que estás buscando no existe.</p>
-        <button type="button" onClick={() => navigate(-1)}>
-          Volver
-        </button>
+        <section className="detail-card detail-empty">
+          <h1>Gasto no encontrado</h1>
+          <p>
+            El gasto que estás buscando no existe o fue eliminado.
+          </p>
+          <button
+            type="button"
+            className="detail-empty-button"
+            onClick={() => navigate('/expenses')}
+          >
+            Volver al listado
+          </button>
+        </section>
       </main>
     );
   }
+
+  const titulo = expense.title ?? expense.descripcion;
+
+  // Función de borrado con confirmación
+  const handleDelete = () => {
+    const confirmado = window.confirm(
+      `¿Estás seguro de que querés eliminar "${titulo}"?`
+    );
+
+    if (confirmado) {
+      removeExpense(expense.id);
+      navigate('/expenses', { replace: true });
+    }
+  };
 
   const rawDate = expense.createdAt ?? expense.fecha;
   const parsedDate = rawDate
@@ -75,6 +100,16 @@ function ExpenseDetailScreen() {
           <span>Notas</span>
           <strong>{expense.notes ?? expense.notas ?? 'Sin notas'}</strong>
         </div>
+
+
+        {/* Sprint 3. Botón de eliminar */}
+        <button
+          type="button"
+          className="detail-delete-button"
+          onClick={handleDelete}
+        >
+          Eliminar gasto
+        </button>
       </section>
     </main>
   );
