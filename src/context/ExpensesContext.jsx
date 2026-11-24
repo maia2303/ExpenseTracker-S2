@@ -1,46 +1,54 @@
+
 import { createContext, useContext, useEffect, useState } from 'react';
-import { INITIAL_EXPENSES } from '../data/mockExpenses';
+import { STORAGE_KEYS, loadJSON, saveJSON } from '../services/storage';
 
 const ExpensesContext = createContext(null);
-const EXPENSES_STORAGE_KEY = 'expensetracker:expenses';
 
+const DEFAULT_SETTINGS = {
+  notificaciones: true,
+  recordatorioDiario: false,
+  resumenSemanal: true,
+};
+
+// Validaciones para no confiar ciegamente en lo que hay en localStorage
+const isValidExpenses = (data) =>
+  Array.isArray(data) &&
+  data.every(
+    (expense) =>
+      expense &&
+      typeof expense.id === 'string' &&
+      typeof expense.title === 'string' &&
+      typeof expense.amount === 'number'
+  );
+
+const isValidSettings = (data) =>
+  data !== null &&
+  typeof data === 'object' &&
+  Object.keys(DEFAULT_SETTINGS).every((key) => typeof data[key] === 'boolean');
 
 export function ExpensesProvider({ children }) {
-  // En la US #1 los gastos viven en un useState dentro del Provider (estado volátil)
-  const [expenses, setExpenses] = useState(() => {
-  try {
-    const storedExpenses = window.localStorage.getItem(EXPENSES_STORAGE_KEY);
+  // HIDRATACIÓN: localStorage es síncrono, así que se lee directamente en el valor
+  // inicial del useState. Cuando el componente hace su primer render, los datos ya están.
+  // Sin datos guardados (o con JSON dañado) se arranca con una lista vacía.
+  const [expenses, setExpenses] = useState(() =>
+    loadJSON(STORAGE_KEYS.expenses, [], isValidExpenses)
+  );
+  const [settings, setSettings] = useState(() =>
+    loadJSON(STORAGE_KEYS.settings, DEFAULT_SETTINGS, isValidSettings)
+  );
 
-    if (storedExpenses === null) {
-      return INITIAL_EXPENSES;
-    }
+  // Se mantiene por equivalencia con React Native, donde AsyncStorage es asíncrono
+  // y la bandera sí cambia de false a true. Acá siempre es true por la lectura síncrona.
+  const isLoaded = true;
 
-    const parsedExpenses = JSON.parse(storedExpenses);
-
-    if (!Array.isArray(parsedExpenses)) {
-      throw new Error('Los gastos guardados no tienen un formato válido.');
-    }
-
-    return parsedExpenses;
-  } catch (error) {
-    console.error('Error al cargar los gastos:', error);
-    return INITIAL_EXPENSES;
-  }
-}); // Sprint 3: Cargar los gastos desde AsyncStorage al iniciar la aplicación
-
-
-  const [isLoaded] = useState(true);
-  // Sprint 3: Guardar los gastos en AsyncStorage cada vez que cambien
+  // PERSISTENCIA: cada vez que cambian los datos, se guardan.
   useEffect(() => {
-  try {
-    window.localStorage.setItem(
-      EXPENSES_STORAGE_KEY,
-      JSON.stringify(expenses)
-    );
-  } catch (error) {
-    console.error('Error al guardar los gastos:', error);
-  }
-}, [expenses]);
+    saveJSON(STORAGE_KEYS.expenses, expenses);
+  }, [expenses]);
+
+  useEffect(() => {
+    saveJSON(STORAGE_KEYS.settings, settings);
+  }, [settings]);
 
   const addExpense = (data) => {
     const newExpense = {
@@ -65,6 +73,10 @@ export function ExpensesProvider({ children }) {
     );
   };
 
+  const updateSetting = (name, value) => {
+    setSettings((prevSettings) => ({ ...prevSettings, [name]: value }));
+  };
+
   return (
     <ExpensesContext.Provider
       value={{
@@ -72,6 +84,8 @@ export function ExpensesProvider({ children }) {
         isLoaded,
         addExpense,
         removeExpense,
+        settings,
+        updateSetting,
       }}
     >
       {children}
