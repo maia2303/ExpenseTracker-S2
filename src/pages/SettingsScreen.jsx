@@ -1,55 +1,9 @@
-import { useEffect, useState } from 'react';
+import { useExpenses } from '../context/ExpensesContext';
 import './SettingsScreen.css';
 
-
-const SETTINGS_STORAGE_KEY = 'expensetracker:settings';
-
-//
-const DEFAULT_SETTINGS = {
-  notificaciones: true,
-  recordatorioDiario: false,
-  resumenSemanal: true,
-};
-
-function loadSettings() {
-  try {
-    const storedSettings = window.localStorage.getItem(SETTINGS_STORAGE_KEY);
-
-    if (storedSettings === null) {
-      return DEFAULT_SETTINGS;
-    }
-
-    const parsedSettings = JSON.parse(storedSettings);
-
-    if (
-      typeof parsedSettings?.notificaciones !== 'boolean' ||
-      typeof parsedSettings?.recordatorioDiario !== 'boolean' ||
-      typeof parsedSettings?.resumenSemanal !== 'boolean'
-    ) {
-      throw new Error('Los ajustes guardados no tienen un formato válido.');
-    }
-
-    return parsedSettings;
-  } catch (error) {
-    console.error('Error al cargar los ajustes:', error);
-    return DEFAULT_SETTINGS;
-  }
-}
-
-
 function SettingsScreen() {
- const [ajustes, setAjustes] = useState(loadSettings);
-
- useEffect(() => {
-  try {
-    window.localStorage.setItem(
-      SETTINGS_STORAGE_KEY,
-      JSON.stringify(ajustes)
-    );
-  } catch (error) {
-    console.error('Error al guardar los ajustes:', error);
-  }
-}, [ajustes]);
+  // Los ajustes se leen y se guardan a través del Context (la pantalla no toca localStorage)
+  const { settings, updateSetting } = useExpenses();
 
   return (
     <main className="settings-page">
@@ -74,8 +28,8 @@ function SettingsScreen() {
             type="checkbox"
             role="switch"
             className="settings-switch"
-            checked={ajustes.notificaciones}
-            onChange={(e) => setAjustes((prev) => ({ ...prev, notificaciones: e.target.checked }))}
+            checked={settings.notificaciones}
+            onChange={(e) => updateSetting('notificaciones', e.target.checked)}
           />
         </div>
 
@@ -93,14 +47,8 @@ function SettingsScreen() {
             type="checkbox"
             role="switch"
             className="settings-switch"
-            // Recordatorio diario
-            checked={ajustes.recordatorioDiario}
-onChange={(event) =>
-  setAjustes((prev) => ({
-    ...prev,
-    recordatorioDiario: event.target.checked,
-  }))
-}
+            checked={settings.recordatorioDiario}
+            onChange={(e) => updateSetting('recordatorioDiario', e.target.checked)}
           />
         </div>
 
@@ -118,8 +66,8 @@ onChange={(event) =>
             type="checkbox"
             role="switch"
             className="settings-switch"
-            checked={ajustes.resumenSemanal}
-            onChange={(e) => setAjustes((prev) => ({ ...prev, resumenSemanal: e.target.checked }))}
+            checked={settings.resumenSemanal}
+            onChange={(e) => updateSetting('resumenSemanal', e.target.checked)}
           />
         </div>
       </section>
@@ -151,4 +99,3 @@ onChange={(event) =>
 }
 
 export default SettingsScreen;
-

@@ -1,65 +1,54 @@
+
 import { createContext, useContext, useEffect, useState } from 'react';
-import {
-  addDoc,
-  collection,
-  deleteDoc,
-  doc,
-  onSnapshot,
-  orderBy,
-  query,
-  serverTimestamp,
-} from 'firebase/firestore';
-import { db } from '../services/firebase';
+import { STORAGE_KEYS, loadJSON, saveJSON } from '../services/storage';
 
 const ExpensesContext = createContext(null);
-const EXPENSES_COLLECTION = 'expenses';
 
-function normalizeCreatedAt(value) {
-  if (!value) return null;
-  if (typeof value?.toDate === 'function') {
-    return value.toDate().toISOString();
-  }
-  return value;
-}
+const DEFAULT_SETTINGS = {
+  notificaciones: true,
+  recordatorioDiario: false,
+  resumenSemanal: true,
+};
+
+// Validaciones para no confiar ciegamente en lo que hay en localStorage
+const isValidExpenses = (data) =>
+  Array.isArray(data) &&
+  data.every(
+    (expense) =>
+      expense &&
+      typeof expense.id === 'string' &&
+      typeof expense.title === 'string' &&
+      typeof expense.amount === 'number'
+  );
+
+const isValidSettings = (data) =>
+  data !== null &&
+  typeof data === 'object' &&
+  Object.keys(DEFAULT_SETTINGS).every((key) => typeof data[key] === 'boolean');
 
 export function ExpensesProvider({ children }) {
-  const [expenses, setExpenses] = useState([]);
-  const [isLoaded, setIsLoaded] = useState(false);
+  // HIDRATACIÓN: localStorage es síncrono, así que se lee directamente en el valor
+  // inicial del useState. Cuando el componente hace su primer render, los datos ya están.
+  // Sin datos guardados (o con JSON dañado) se arranca con una lista vacía.
+  const [expenses, setExpenses] = useState(() =>
+    loadJSON(STORAGE_KEYS.expenses, [], isValidExpenses)
+  );
+  const [settings, setSettings] = useState(() =>
+    loadJSON(STORAGE_KEYS.settings, DEFAULT_SETTINGS, isValidSettings)
+  );
+
+  // Se mantiene por equivalencia con React Native, donde AsyncStorage es asíncrono
+  // y la bandera sí cambia de false a true. Acá siempre es true por la lectura síncrona.
+  const isLoaded = true;
+
+  // PERSISTENCIA: cada vez que cambian los datos, se guardan.
+  useEffect(() => {
+    saveJSON(STORAGE_KEYS.expenses, expenses);
+  }, [expenses]);
 
   useEffect(() => {
-    const expensesQuery = query(
-      collection(db, EXPENSES_COLLECTION),
-      orderBy('createdAt', 'desc')
-    );
-
-    const unsubscribe = onSnapshot(
-      expensesQuery,
-      (snapshot) => {
-        const nextExpenses = snapshot.docs.map((docSnapshot) => {
-          const data = docSnapshot.data({ serverTimestamps: 'estimate' });
-
-          return {
-            id: docSnapshot.id,
-            title: data.title ?? '',
-            amount: Number(data.amount ?? 0),
-            category: data.category ?? '',
-            notes: data.notes ?? '',
-            createdAt: normalizeCreatedAt(data.createdAt),
-            hasPendingWrites: docSnapshot.metadata.hasPendingWrites,
-          };
-        });
-
-        setExpenses(nextExpenses);
-        setIsLoaded(true);
-      },
-      (error) => {
-        console.error('Error al escuchar los gastos en Firestore:', error);
-        setIsLoaded(true);
-      }
-    );
-
-    return () => unsubscribe();
-  }, []);
+    saveJSON(STORAGE_KEYS.settings, settings);
+  }, [settings]);
 
   const addExpense = (data) => {
     const payload = {
@@ -81,6 +70,10 @@ export function ExpensesProvider({ children }) {
     });
   };
 
+  const updateSetting = (name, value) => {
+    setSettings((prevSettings) => ({ ...prevSettings, [name]: value }));
+  };
+
   return (
     <ExpensesContext.Provider
       value={{
@@ -88,6 +81,8 @@ export function ExpensesProvider({ children }) {
         isLoaded,
         addExpense,
         removeExpense,
+        settings,
+        updateSetting,
       }}
     >
       {children}
