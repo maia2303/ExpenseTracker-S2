@@ -51,26 +51,23 @@ export function ExpensesProvider({ children }) {
   }, [settings]);
 
   const addExpense = (data) => {
-    const newExpense = {
-      id:
-        typeof crypto !== 'undefined' && crypto.randomUUID
-          ? crypto.randomUUID()
-          : String(Date.now()),
+    const payload = {
       title: data.title.trim(),
       amount: Number(data.amount),
       category: data.category.trim(),
       notes: data.notes ? data.notes.trim() : '',
-      createdAt: new Date().toISOString(),
+      createdAt: serverTimestamp(),
     };
 
-    setExpenses((prevExpenses) => [newExpense, ...prevExpenses]);
-    return newExpense;
+    return addDoc(collection(db, EXPENSES_COLLECTION), payload).catch((error) => {
+      console.error('Error al guardar el gasto en Firestore:', error);
+    });
   };
 
   const removeExpense = (id) => {
-    setExpenses((prevExpenses) =>
-      prevExpenses.filter((expense) => expense.id !== id)
-    );
+    return deleteDoc(doc(db, EXPENSES_COLLECTION, id)).catch((error) => {
+      console.error('Error al eliminar el gasto en Firestore:', error);
+    });
   };
 
   const updateSetting = (name, value) => {
