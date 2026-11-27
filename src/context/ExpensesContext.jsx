@@ -1,68 +1,84 @@
 import { createContext, useContext, useEffect, useState } from 'react';
-import { INITIAL_EXPENSES } from '../data/mockExpenses';
+import {
+  addDoc,
+  collection,
+  deleteDoc,
+  doc,
+  onSnapshot,
+  orderBy,
+  query,
+  serverTimestamp,
+} from 'firebase/firestore';
+import { db } from '../services/firebase';
 
 const ExpensesContext = createContext(null);
-const EXPENSES_STORAGE_KEY = 'expensetracker:expenses';
+const EXPENSES_COLLECTION = 'expenses';
 
+function normalizeCreatedAt(value) {
+  if (!value) return null;
+  if (typeof value?.toDate === 'function') {
+    return value.toDate().toISOString();
+  }
+  return value;
+}
 
 export function ExpensesProvider({ children }) {
-  // En la US #1 los gastos viven en un useState dentro del Provider (estado volátil)
-  const [expenses, setExpenses] = useState(() => {
-  try {
-    const storedExpenses = window.localStorage.getItem(EXPENSES_STORAGE_KEY);
+  const [expenses, setExpenses] = useState([]);
+  const [isLoaded, setIsLoaded] = useState(false);
 
-    if (storedExpenses === null) {
-      return INITIAL_EXPENSES;
-    }
-
-    const parsedExpenses = JSON.parse(storedExpenses);
-
-    if (!Array.isArray(parsedExpenses)) {
-      throw new Error('Los gastos guardados no tienen un formato válido.');
-    }
-
-    return parsedExpenses;
-  } catch (error) {
-    console.error('Error al cargar los gastos:', error);
-    return INITIAL_EXPENSES;
-  }
-}); // Sprint 3: Cargar los gastos desde AsyncStorage al iniciar la aplicación
-
-
-  const [isLoaded] = useState(true);
-  // Sprint 3: Guardar los gastos en AsyncStorage cada vez que cambien
   useEffect(() => {
-  try {
-    window.localStorage.setItem(
-      EXPENSES_STORAGE_KEY,
-      JSON.stringify(expenses)
+    const expensesQuery = query(
+      collection(db, EXPENSES_COLLECTION),
+      orderBy('createdAt', 'desc')
     );
-  } catch (error) {
-    console.error('Error al guardar los gastos:', error);
-  }
-}, [expenses]);
+
+    const unsubscribe = onSnapshot(
+      expensesQuery,
+      (snapshot) => {
+        const nextExpenses = snapshot.docs.map((docSnapshot) => {
+          const data = docSnapshot.data({ serverTimestamps: 'estimate' });
+
+          return {
+            id: docSnapshot.id,
+            title: data.title ?? '',
+            amount: Number(data.amount ?? 0),
+            category: data.category ?? '',
+            notes: data.notes ?? '',
+            createdAt: normalizeCreatedAt(data.createdAt),
+            hasPendingWrites: docSnapshot.metadata.hasPendingWrites,
+          };
+        });
+
+        setExpenses(nextExpenses);
+        setIsLoaded(true);
+      },
+      (error) => {
+        console.error('Error al escuchar los gastos en Firestore:', error);
+        setIsLoaded(true);
+      }
+    );
+
+    return () => unsubscribe();
+  }, []);
 
   const addExpense = (data) => {
-    const newExpense = {
-      id:
-        typeof crypto !== 'undefined' && crypto.randomUUID
-          ? crypto.randomUUID()
-          : String(Date.now()),
+    const payload = {
       title: data.title.trim(),
       amount: Number(data.amount),
       category: data.category.trim(),
       notes: data.notes ? data.notes.trim() : '',
-      createdAt: new Date().toISOString(),
+      createdAt: serverTimestamp(),
     };
 
-    setExpenses((prevExpenses) => [newExpense, ...prevExpenses]);
-    return newExpense;
+    return addDoc(collection(db, EXPENSES_COLLECTION), payload).catch((error) => {
+      console.error('Error al guardar el gasto en Firestore:', error);
+    });
   };
 
   const removeExpense = (id) => {
-    setExpenses((prevExpenses) =>
-      prevExpenses.filter((expense) => expense.id !== id)
-    );
+    return deleteDoc(doc(db, EXPENSES_COLLECTION, id)).catch((error) => {
+      console.error('Error al eliminar el gasto en Firestore:', error);
+    });
   };
 
   return (
